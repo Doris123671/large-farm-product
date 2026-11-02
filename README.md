@@ -2,7 +2,7 @@
 
 A small MongoDB/Mongoose data layer for a library catalog. It defines separate `Genre` and `Book` collections and provides a repeatable script that loads four genres and fifteen sample books.
 
-The companion React catalog frontend is in [`client/`](./client/); its setup, API configuration, and demo instructions are in [`client/README.md`](./client/README.md).
+The companion React catalog frontend is in [`client/`](./client/); its setup, API configuration, persistence/authentication notes, and demo instructions are in [`client/README.md`](./client/README.md).
 
 ## Requirements
 

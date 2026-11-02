@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { fetchJson, getErrorMessage } from '../lib/api.js';
+import useReadingList from '../hooks/useReadingList.js';
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -8,6 +9,7 @@ export default function BookDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [imageFailed, setImageFailed] = useState(false);
+  const { readingList, addBook, removeBook } = useReadingList();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -49,6 +51,7 @@ export default function BookDetailPage() {
   }
 
   const genreName = typeof book.genre === 'object' ? book.genre?.name : '';
+  const isSaved = readingList.some((item) => item._id === book._id);
 
   return (
     <article className="detail-page">
@@ -85,6 +88,14 @@ export default function BookDetailPage() {
             )}
             {genreName && <div><dt>Genre</dt><dd>{genreName}</dd></div>}
           </dl>
+          <button
+            className={`button button-outline detail-save${isSaved ? ' is-saved' : ''}`}
+            type="button"
+            onClick={() => (isSaved ? removeBook(book._id) : addBook(book))}
+            aria-pressed={isSaved}
+          >
+            {isSaved ? '✓ Saved to reading list' : '+ Add to reading list'}
+          </button>
           <Link className="button button-dark detail-cta" to="/">Keep exploring <span aria-hidden="true">→</span></Link>
         </div>
       </div>

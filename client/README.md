@@ -19,11 +19,14 @@ Vite proxies `/books` and `/genres` to the API at `http://localhost:3000`, so th
 
 ## Screen recording / GIF
 
-The demo recording is not attached yet because the API database is not configured in this workspace. After starting the API and seeding the catalog, record this short flow at `http://localhost:5173` and add the resulting Loom/GIF URL here: browse the collection → choose a genre → type a title or author (search waits 400 ms after typing) → open a book card.
+The demo recording is not attached yet because the API database is not configured in this workspace. After starting the API and seeding the catalog, record this flow at `http://localhost:5173`: save a book → refresh and confirm it remains in the reading list → remove it → open `/booking` while signed out and show the redirect to sign-in → sign in → fill the space/date/start/end booking fields. Add the resulting Loom/GIF URL here.
 
 ## Implementation notes
 
 - Genre filtering and search use the API's `GET /books?genre=...&search=...` endpoint. The API performs the filtering and pagination, keeping the browser's data transfer small; the URL preserves the current filter and search for sharing and browser navigation.
 - The grid reflows from two columns on narrow screens to three and four columns as more space is available.
 - Catalog, genre, and detail requests have visible loading and error feedback. Empty catalog matches and missing/invalid book IDs have separate recovery states.
+- The reading list is stored in browser `localStorage`, so it survives reloads without needing an account or another API request. It is device- and browser-specific and is not shared across devices; backend synchronization would enable that later, at the cost of requiring network access and a signed-in account.
+- Login, registration, and the initial profile check use the backend `/api/auth/*` and `/api/users/profile` endpoints. The API stores its JWT in an HttpOnly cookie; requests include credentials. Keep the frontend and API same-site (the Vite development proxy does this locally), or configure a same-site production reverse proxy and appropriate server CORS/CSRF policy.
+- `/booking` is protected by the app-wide profile status, including direct URL visits. The booking form keeps space, date, start time, and end time in component state only and does not submit a booking to the API yet.
 - `npm run build` creates the production site in `dist/`.

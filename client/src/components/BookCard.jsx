@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import useReadingList from '../hooks/useReadingList.js';
 
 export default function BookCard({ book }) {
   const [imageFailed, setImageFailed] = useState(false);
   const genreName = typeof book.genre === 'object' ? book.genre?.name : '';
+  const { readingList, addBook, removeBook } = useReadingList();
+  const isSaved = readingList.some((item) => item._id === book._id);
 
   return (
     <article className="book-card">
@@ -30,6 +33,14 @@ export default function BookCard({ book }) {
         {genreName && <span className="book-genre">{genreName}</span>}
         <h2><Link to={`/book/${book._id}`}>{book.title}</Link></h2>
         <p>{book.author}</p>
+        <button
+          className={`save-book-button${isSaved ? ' is-saved' : ''}`}
+          type="button"
+          onClick={() => (isSaved ? removeBook(book._id) : addBook(book))}
+          aria-pressed={isSaved}
+        >
+          {isSaved ? '✓ Saved to reading list' : '+ Add to reading list'}
+        </button>
       </div>
     </article>
   );
