@@ -1,6 +1,50 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import BookCard from '../components/BookCard.jsx';
 import useReadingList from '../hooks/useReadingList.js';
+import useAuth from '../hooks/useAuth.js';
+import { fetchJson, getErrorMessage } from '../lib/api.js';
+
+function ReadingListBook({ book }) {
+  const { status } = useAuth();
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  async function requestBook() {
+    setError('');
+    setMessage('');
+    setSubmitting(true);
+    try {
+      const request = await fetchJson('/api/borrow-requests', {
+        method: 'POST',
+        body: { bookId: book._id },
+      });
+      setMessage(`Request sent. Due ${new Date(request.dueAt).toLocaleDateString()}.`);
+    } catch (requestError) {
+      setError(getErrorMessage(requestError));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="reading-list-item">
+      <BookCard book={book} />
+      {status === 'authenticated' ? (
+        <button className="button button-outline reading-request-button" type="button" onClick={requestBook} disabled={submitting}>
+          {submitting ? 'Sending request...' : 'Request this book'}
+        </button>
+      ) : (
+        <Link className="reading-request-link" to="/login" state={{ from: { pathname: '/reading-list' } }}>
+          Sign in to request this book
+        </Link>
+      )}
+      {message && <p className="form-success reading-request-feedback" role="status">{message}</p>}
+      {error && <p className="form-error reading-request-feedback" role="alert">{error}</p>}
+    </div>
+  );
+}
 
 export default function ReadingListPage() {
   const { readingList, clearList } = useReadingList();
@@ -29,7 +73,7 @@ export default function ReadingListPage() {
         </div>
       ) : (
         <div className="book-grid">
-          {readingList.map((book) => <BookCard key={book._id} book={book} />)}
+          {readingList.map((book) => <ReadingListBook key={book._id} book={book} />)}
         </div>
       )}
     </section>

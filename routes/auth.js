@@ -15,7 +15,7 @@ function cookieOptions() {
   return {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: process.env.COOKIE_SAME_SITE || 'strict',
     path: '/',
   };
 }

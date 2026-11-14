@@ -5,13 +5,20 @@ const genresRouter = require('./routes/genres');
 const booksRouter = require('./routes/books');
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
+const borrowRequestsRouter = require('./routes/borrowRequests');
+const bookingsRouter = require('./routes/bookings');
+const cors = require('./middleware/cors');
 
 const app = express();
 
 app.disable('x-powered-by');
+app.use(cors);
 app.use(express.json({ limit: '100kb' }));
+app.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }));
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/borrow-requests', borrowRequestsRouter);
+app.use('/api/bookings', bookingsRouter);
 app.use('/genres', genresRouter);
 app.use('/books', booksRouter);
 

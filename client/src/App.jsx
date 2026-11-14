@@ -9,9 +9,12 @@ import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import ReadingListPage from './pages/ReadingListPage.jsx';
+import AdminBooksPage from './pages/admin/AdminBooksPage.jsx';
+import AdminBorrowRequestsPage from './pages/admin/AdminBorrowRequestsPage.jsx';
+import AdminBookingsPage from './pages/admin/AdminBookingsPage.jsx';
 
 function SiteHeader() {
-  const { status, logout } = useAuth();
+  const { status, user, logout } = useAuth();
   const { readingList } = useReadingList();
   const [logoutError, setLogoutError] = useState('');
 
@@ -37,6 +40,7 @@ function SiteHeader() {
           {status === 'authenticated' ? (
             <>
               <Link className="header-nav-link" to="/booking">Book a space</Link>
+              {user?.role === 'librarian' && <Link className="header-nav-link" to="/admin/books">Admin</Link>}
               <button className="header-nav-link header-button" type="button" onClick={handleLogout}>Sign out</button>
             </>
           ) : status === 'loading' ? (
@@ -77,6 +81,9 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/booking" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
+          <Route path="/admin/books" element={<ProtectedRoute requiredRole="librarian"><AdminBooksPage /></ProtectedRoute>} />
+          <Route path="/admin/borrow-requests" element={<ProtectedRoute requiredRole="librarian"><AdminBorrowRequestsPage /></ProtectedRoute>} />
+          <Route path="/admin/bookings" element={<ProtectedRoute requiredRole="librarian"><AdminBookingsPage /></ProtectedRoute>} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

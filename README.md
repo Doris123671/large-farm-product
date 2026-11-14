@@ -30,6 +30,11 @@ Start the API with `npm start` after configuring `MONGODB_URI`. The server liste
 | `POST` | `/api/auth/login` | Verify a username or email and password; on success, set the `library_auth` authentication cookie (`200`). |
 | `POST` | `/api/auth/logout` | Clear the authentication cookie (`200`). |
 | `GET` | `/api/users/profile` | Return the authenticated caller's own profile. Requires authentication. |
+| `POST` | `/api/borrow-requests` | Reserve an available book for the signed-in patron; rejects unavailable copies (`409`). |
+| `GET` | `/api/borrow-requests` | List all requests with book and patron details. Requires a librarian. |
+| `PATCH` | `/api/borrow-requests/:id` | Change a request status. Requires a librarian; returning a late book computes its fine on the server. |
+| `POST` | `/api/bookings` | Create a space booking after checking same-space, same-date time overlaps. Requires authentication. |
+| `GET` | `/api/bookings` | List all space bookings. Requires a librarian. |
 | `GET` | `/genres` | List genres, sorted by name. |
 | `GET` | `/genres/:id` | Get one genre (`404` if it does not exist). |
 | `POST` | `/genres` | Create a genre; requires non-empty `name` and lowercase kebab-case `slug` (`201`). |
@@ -48,6 +53,14 @@ Registration accepts usernames of 3–30 letters, digits, or underscores (stored
 ### Token Storage and logout
 
 The browser stores the JWT in the `library_auth` cookie, which is marked `HttpOnly`, `SameSite=Strict`, and `Secure` in production. I chose this over `localStorage` because JavaScript cannot read an HttpOnly cookie, reducing the chance that an XSS bug can steal the credential; a localStorage token is easier for JavaScript clients to attach but is exposed to injected scripts. `SameSite=Strict` also helps prevent cross-site request forgery (CSRF). Cookies are attached automatically to requests, however, so this approach is less convenient than explicitly adding a bearer token, and cookie-based authentication still needs deliberate CSRF protection if the application later permits cross-site requests or relaxes its `SameSite` policy. Keep the API and browser app same-site, retain `SameSite=Strict`, and add CSRF tokens and Origin checks before enabling cross-site cookie use.
+
+### Borrowing and space booking rules
+
+A borrow request is created only for a book with an available copy. The API decrements the available-copy count atomically when accepting a request, assigns a 14-day due date, and restores the copy when a librarian marks the request returned. A librarian cannot submit a fine amount: when a request is returned, the server charges **$0.25 for each started 24-hour period after the due timestamp** (rounded up, with no charge when returned on time). The calculated amount and return timestamp are stored with the request.
+
+Space bookings use an ISO calendar date and 24-hour `HH:MM` times. Before saving, the server searches for an existing booking with the same space and date whose start is earlier than the requested end and whose end is later than the requested start. This catches partial overlaps and bookings that contain or are contained by another booking; touching endpoints (for example 10:00–11:00 and 11:00–12:00) do not overlap. A conflict returns `409`.
+
+The librarian interface is available at `/admin/books`, `/admin/borrow-requests`, and `/admin/bookings`. Book administration calls the existing Book CRUD API, and the other pages read and update the live API data.
 
 Tokens expire after one hour. Logout clears the browser cookie, but JWTs are stateless: clearing it does not revoke a copied token on the server, and such a token remains usable until expiry. For that reason, clients using the optional bearer-header mode must discard their own token on logout. Immediate server-side revocation would require a token blocklist or server-managed sessions; neither is used here. This keeps the service simple and avoids a database lookup for session state, at the cost of delaying revocation until expiration. The cookie is the recommended storage for browser clients.
 

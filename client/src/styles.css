@@ -218,6 +218,37 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .booking-note { margin: 0; color: #85877e; font-size: 9px; line-height: 1.7; }
 .booking-success { margin: 0; }
 
+.reading-list-item { min-width: 0; }
+.reading-request-button { min-height: 36px; margin-top: 12px; }
+.reading-request-link { display: inline-block; margin-top: 12px; color: #526749; font-size: 10px; font-weight: 600; }
+.reading-request-feedback { margin: 10px 0 0; }
+.admin-page { min-height: 65vh; padding: 55px 8.5% 90px; }
+.admin-page > h1 { margin: 15px 0 25px; font-family: var(--serif); font-size: clamp(36px, 4vw, 48px); font-weight: 500; }
+.admin-navigation { display: flex; flex-wrap: wrap; gap: 20px; padding: 13px 0; margin-bottom: 30px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.admin-navigation a { color: #73786e; font-size: 11px; }
+.admin-navigation a.active { color: #344333; font-weight: 700; text-decoration: underline; text-underline-offset: 5px; }
+.admin-form-panel { padding: 22px; border: 1px solid var(--line); background: #fbfaf7; }
+.admin-form-panel h2, .admin-table-heading h2 { margin: 0; font-family: var(--serif); font-size: 22px; font-weight: 500; }
+.admin-book-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.admin-book-form label { display: flex; min-width: 0; flex-direction: column; gap: 6px; color: #555b50; font-size: 10px; font-weight: 600; }
+.admin-book-form input, .admin-book-form select, .admin-book-form textarea { width: 100%; min-width: 0; padding: 10px; border: 1px solid #dcddd4; border-radius: 0; background: #fffefa; color: var(--ink); font-size: 11px; }
+.admin-book-form input, .admin-book-form select { height: 39px; }
+.admin-book-form textarea { resize: vertical; }
+.admin-form-wide { grid-column: 1 / -1; }
+.admin-form-actions { display: flex; align-items: center; gap: 10px; grid-column: 1 / -1; }
+.admin-form-actions .button { margin-top: 0; }
+.admin-table-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 35px 0 13px; }
+.admin-refresh { border: 0; border-bottom: 1px solid #b8beb0; padding: 6px 0; background: transparent; color: #53644a; font-size: 10px; font-weight: 600; cursor: pointer; }
+.admin-table-wrap { overflow-x: auto; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.admin-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 10px; }
+.admin-table th { padding: 12px 10px; color: #80847a; font-size: 9px; font-weight: 600; white-space: nowrap; }
+.admin-table td { padding: 13px 10px; border-top: 1px solid var(--line); color: #41473e; vertical-align: middle; }
+.admin-table select { max-width: 130px; padding: 7px 8px; border: 1px solid #dcddd4; background: #fffefa; color: var(--ink); font-size: 10px; text-transform: capitalize; }
+.admin-row-actions { white-space: nowrap; }
+.admin-row-actions button { margin-right: 10px; border: 0; border-bottom: 1px solid #c9c9c0; padding: 4px 0; background: transparent; color: #526749; font-size: 10px; cursor: pointer; }
+.admin-row-actions button:last-child { color: #985b49; }
+.admin-help { margin-top: 17px; color: #85877e; font-size: 10px; line-height: 1.7; }
+
 @media (min-width: 1500px) {
   .app-shell { width: min(100% - 140px, 1390px); }
   .hero { min-height: 490px; }
@@ -278,6 +309,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .detail-copy .eyebrow { font-size: 8px; }
   .detail-divider { margin: 24px 0 18px; }
   .reading-page, .booking-page { padding: 43px 0 60px; }
+  .admin-page { padding: 43px 0 60px; }
   .reading-page .section-heading h1, .booking-heading h1 { font-size: 44px; }
   .reading-page .section-heading { align-items: start; }
   .booking-layout { grid-template-columns: 1fr; gap: 25px; margin-top: 32px; }
@@ -285,6 +317,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .booking-heading > p:not(.eyebrow) { margin-top: 12px; }
   .booking-ornament { display: none; }
   .booking-card { padding: 22px 18px; }
+  .admin-form-panel { padding: 18px 14px; }
+  .admin-book-form { grid-template-columns: 1fr; }
+  .admin-form-wide, .admin-form-actions { grid-column: auto; }
+  .admin-navigation { gap: 13px; }
+  .admin-navigation a { font-size: 10px; }
   .auth-card { padding: 32px 24px; }
   .detail-save { margin-bottom: 12px; }
 }

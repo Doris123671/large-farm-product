@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { fetchJson, getErrorMessage } from '../lib/api.js';
 
 const spaces = [
   'Reading Room — Window Seat',
@@ -15,6 +16,8 @@ export default function BookingForm() {
     endTime: '',
   });
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const today = new Date();
   const minimumDate = new Date(today.getTime() - today.getTimezoneOffset() * 60_000)
     .toISOString()
@@ -23,11 +26,22 @@ export default function BookingForm() {
   function updateField(event) {
     setBooking((current) => ({ ...current, [event.target.name]: event.target.value }));
     setSaved(false);
+    setError('');
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    setSaved(true);
+    setSaved(false);
+    setError('');
+    setSubmitting(true);
+    try {
+      await fetchJson('/api/bookings', { method: 'POST', body: booking });
+      setSaved(true);
+    } catch (bookingError) {
+      setError(getErrorMessage(bookingError));
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -53,13 +67,14 @@ export default function BookingForm() {
           <input type="time" name="endTime" value={booking.endTime} onChange={updateField} required />
         </label>
       </div>
-      <p className="booking-note">Your selections stay in this form for now. Online reservations are coming soon.</p>
-      <button className="button button-dark auth-submit" type="submit">
-        Save my selections <span aria-hidden="true">→</span>
+      <p className="booking-note">The library checks your time against existing reservations before confirming the space.</p>
+      <button className="button button-dark auth-submit" type="submit" disabled={submitting}>
+        {submitting ? 'Checking availability...' : 'Request this time'} <span aria-hidden="true">→</span>
       </button>
+      {error && <p className="form-error booking-success" role="alert">{error}</p>}
       {saved && (
         <p className="form-success booking-success" role="status">
-          Selections saved locally in the form. We’ll connect this to reservations soon.
+          Your space booking is confirmed.
         </p>
       )}
     </form>
