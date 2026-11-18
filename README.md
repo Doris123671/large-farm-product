@@ -1,4 +1,4 @@
-# Library Catalog Service
+# Large Farm Product — Library Management System
 
 A small MongoDB/Mongoose data layer for a library catalog. It defines separate `Genre` and `Book` collections and provides a repeatable script that loads four genres and fifteen sample books.
 

@@ -1,4 +1,4 @@
-# Fieldnotes — Library Catalog
+# Large Farm Product — Library Management System
 
 A responsive React catalog experience for the Library Catalog Service API. Browse the collection, combine a genre filter with title/author search, and open a book for its full details.
 

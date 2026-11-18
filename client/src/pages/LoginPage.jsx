@@ -65,7 +65,7 @@ export default function LoginPage() {
             {submitting ? 'Signing in...' : 'Sign in'} <span aria-hidden="true">→</span>
           </button>
         </form>
-        <p className="auth-switch">New to Fieldnotes? <Link to="/register">Create an account</Link></p>
+        <p className="auth-switch">New to Large Farm Product? <Link to="/register">Create an account</Link></p>
         <Link className="auth-back" to="/">← Back to the collection</Link>
       </div>
     </section>

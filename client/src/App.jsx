@@ -58,13 +58,13 @@ function SiteHeader() {
 
 function BrandMark() {
   return (
-    <Link className="brand" to="/" aria-label="Fieldnotes home">
+    <Link className="brand" to="/" aria-label="Large Farm Product home">
       <span className="brand-mark" aria-hidden="true">
         <span />
         <span />
         <span />
       </span>
-      <span>fieldnotes<span className="brand-period">.</span></span>
+      <span>Large Farm Product<span className="brand-period">.</span></span>
     </Link>
   );
 }
